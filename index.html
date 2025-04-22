@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1976d2">
+    <meta name="description" content="Aplicativo educacional para pequenos produtores rurais com dados da NASA">
+    <title>AgroDecision PWA</title>
+    
+    <!-- Manifest e ícones para PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <!-- Folhas de estilo -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/map.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/noticias-regionais.css">
+    <link rel="stylesheet" href="css/tests.css">
+</head>
+<body>
+    <!-- Overlay de carregamento inicial -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div id="appLogo" class="app-logo">
+                <!-- Logos serão inseridos via JavaScript -->
+                <img src="img/nasa.png" alt="NASA" class="logo-nasa">
+                <img src="img/logo_AD.png" alt="AgroDecision" class="logo-ad">
+                <img src="img/Credicitrus.jpg" alt="Credicitrus" class="logo-credicitrus">
+            </div>
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Carregando AgroDecision...</div>
+        </div>
+    </div>
+
+    <!-- Barra lateral (estilo Android) -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <img src="img/logo_AD.png" alt="AgroDecision" class="sidebar-logo">
+            <div class="sidebar-title">AgroDecision</div>
+            <button id="closeSidebar" class="sidebar-close">&times;</button>
+        </div>
+        
+        <div class="sidebar-user">
+            <img src="img/default-user.png" alt="Usuário" class="user-avatar">
+            <div class="user-info">
+                <div class="user-name">Produtor Rural</div>
+                <div class="user-status">Modo Educacional</div>
+            </div>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="home">
+                <span class="nav-icon material-icons">home</span>
+                <span class="nav-text">Início</span>
+            </a>
+            <a href="#" class="nav-item" data-section="simulacao">
+                <span class="nav-icon material-icons">agriculture</span>
+                <span class="nav-text">Simulação de Colheita</span>
+            </a>
+            <a href="#" class="nav-item" data-section="consulta">
+                <span class="nav-icon material-icons">insert_chart</span>
+                <span class="nav-text">Consulta Mensal</span>
+            </a>
+            <a href="#" class="nav-item" data-section="indicadores">
+                <span class="nav-icon material-icons">trending_up</span>
+                <span class="nav-text">Indicadores</span>
+            </a>
+            <a href="#" class="nav-item" data-section="noticias">
+                <span class="nav-icon material-icons">feed</span>
+                <span class="nav-text">Notícias Regionais</span>
+            </a>
+            <a href="#" class="nav-item" data-section="historico">
+                <span class="nav-icon material-icons">history</span>
+                <span class="nav-text">Histórico</span>
+            </a>
+            <a href="#" class="nav-item" data-section="configuracoes">
+                <span class="nav-icon material-icons">settings</span>
+                <span class="nav-text">Configurações</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-footer">
+            <div class="partner-logos">
+                <img src="img/nasa.png" alt="NASA" class="partner-logo">
+                <img src="img/Credicitrus.jpg" alt="Credicitrus" class="partner-logo">
+            </div>
+            <div class="app-version">Versão 2.0.0</div>
+        </div>
+    </div>
+
+    <!-- Overlay para fechar a barra lateral -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- Conteúdo principal -->
+    <div id="mainContent" class="main-content">
+        <!-- Cabeçalho -->
+        <header class="app-header">
+            <button id="openSidebar" class="menu-button">
+                <span class="menu-icon material-icons">menu</span>
+            </button>
+            <h1 class="app-title">AgroDecision</h1>
+            <div class="header-actions">
+                <button id="refreshButton" class="action-button" title="Atualizar dados">
+                    <span class="action-icon material-icons">refresh</span>
+                </button>
+                <button id="installButton" class="action-button" title="Instalar aplicativo">
+                    <span class="action-icon material-icons">get_app</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Seção Inicial -->
+        <section id="homeSection" class="app-section active">
+            <div class="section-header">
+                <h2>Bem-vindo ao AgroDecision</h2>
+                <p>Aplicativo educacional para pequenos produtores rurais com dados da NASA</p>
+            </div>
+            
+            <div class="map-container">
+                <div id="map" class="map"></div>
+                <div class="map-instructions">
+                    <p>Selecione uma localização no mapa para obter dados climáticos e agrícolas.</p>
+                </div>
+                <div id="mapData" class="map-data">
+                    <div class="data-header">
+                        <h3>Dados da Localização</h3>
+                        <span id="locationName">Nenhuma localização selecionada</span>
+                    </div>
+                    <div class="data-content">
+                        <div class="data-loading">Selecione uma localização no mapa</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <div class="action-card" id="simulacaoCard">
+                    <div class="card-icon material-icons">agriculture</div>
+                    <div class="card-content">
+                        <h3>Simulação de Colheita</h3>
+                        <p>Simule sua colheita com base em dados climáticos reais da NASA.</p>
+                    </div>
+                </div>
+                <div class="action-card" id="consultaCard">
+                    <div class="card-icon material-icons">insert_chart</div>
+                    <div class="card-content">
+                        <h3>Consulta Mensal</h3>
+                        <p>Analise dados históricos mensais para sua região.</p>
+                    </div>
+                </div>
+                <div class="action-card" id="noticiasCard">
+                    <div class="card-icon material-icons">feed</div>
+                    <div class="card-content">
+                        <h3>Notícias Regionais</h3>
+                        <p>Acesse notícias e informações relevantes para sua região.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nasa-data-section">
+                <div class="section-header">
+                    <h3>Dados da NASA</h3>
+                    <p>Informações climáticas e agrícolas baseadas em satélites da NASA</p>
+                </div>
+                <div class="nasa-data-cards">
+                    <div class="data-card">
+                        <div class="data-card-header">
+                            <h4>Temperatura</h4>
+                            <img src="img/nasa.png" alt="NASA" class="data-source-logo">
+                        </div>
+                        <div class="data-card-content">
+                            <div class="data-value" id="tempValue">--</div>
+                            <div class="data-unit">°C</div>
+                        </div>
+                        <div class="data-card-footer">
+                            <span>Média dos últimos 7 dias</span>
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-header">
+                            <h4>Precipitação</h4>
+                            <img src="img/nasa.png" alt="NASA" class="data-source-logo">
+                        </div>
+                        <div class="data-card-content">
+                            <div class="data-value" id="precipValue">--</div>
+                            <div class="data-unit">mm</div>
+                        </div>
+                        <div class="data-card-footer">
+                            <span>Acumulado dos últimos 7 dias</span>
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-header">
+                            <h4>Radiação Solar</h4>
+                            <img src="img/nasa.png" alt="NASA" class="data-source-logo">
+                        </div>
+                        <div class="data-card-content">
+                            <div class="data-value" id="radiationValue">--</div>
+                            <div class="data-unit">kWh/m²</div>
+                        </div>
+                        <div class="data-card-footer">
+                            <span>Média dos últimos 7 dias</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Simulação de Colheita -->
+        <section id="simulacaoSection" class="app-section">
+            <div class="section-header">
+                <h2>Simulação de Colheita</h2>
+                <p>Simule sua colheita com base em dados climáticos reais da NASA</p>
+            </div>
+            
+            <div id="simulationContainer" class="simulation-container">
+                <div class="simulation-form">
+                    <div class="form-group">
+                        <label for="cropSelect">Cultura:</label>
+                        <select id="cropSelect" class="nasa-select">
+                            <option value="soja">Soja</option>
+                            <option value="milho">Milho</option>
+                            <option value="cafe">Café</option>
+                            <option value="cana">Cana-de-açúcar</option>
+                            <option value="algodao">Algodão</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="areaInput">Área (hectares):</label>
+                        <input type="number" id="areaInput" class="nasa-input" min="1" max="1000" value="10">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="soilSelect">Tipo de Solo:</label>
+                        <select id="soilSelect" class="nasa-select">
+                            <option value="argiloso">Argiloso</option>
+                            <option value="arenoso">Arenoso</option>
+                            <option value="misto">Misto</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="plantingDate">Data de Plantio:</label>
+                        <input type="date" id="plantingDate" class="nasa-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="irrigationSelect">Sistema de Irrigação:</label>
+                        <select id="irrigationSelect" class="nasa-select">
+                            <option value="nenhum">Nenhum</option>
+                            <option value="gotejamento">Gotejamento</option>
+                            <option value="aspersao">Aspersão</option>
+                            <option value="pivoCentral">Pivô Central</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button id="runSimulationBtn" class="nasa-button">Executar Simulação</button>
+                        <button id="resetSimulationBtn" class="nasa-button secondary">Limpar</button>
+                    </div>
+                </div>
+                
+                <div id="simulationResults" class="simulation-results">
+                    <div class="results-header">
+                        <h3>Resultados da Simulação</h3>
+                        <p>Baseados em dados climáticos históricos da NASA</p>
+                    </div>
+                    
+                    <div class="results-content">
+                        <div class="results-loading">Execute a simulação para ver os resultados</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Consulta Mensal -->
+        <section id="consultaSection" class="app-section">
+            <div class="section-header">
+                <h2>Consulta Mensal</h2>
+                <p>Analise dados históricos mensais para sua região</p>
+            </div>
+            
+            <div id="consultaMensalContainer" class="consulta-container">
+                <!-- Conteúdo será carregado dinamicamente -->
+                <div class="consulta-loading">Selecione uma localização no mapa para ver os dados mensais</div>
+            </div>
+        </section>
+
+        <!-- Seção de Indicadores -->
+        <section id="indicadoresSection" class="app-section">
+            <div class="section-header">
+                <h2>Indicadores</h2>
+                <p>Acompanhe indicadores importantes para sua produção</p>
+            </div>
+            
+            <div id="indicadoresContainer" class="indicadores-container">
+                <!-- Conteúdo será carregado dinamicamente -->
+                <div class="indicadores-loading">Selecione uma localização no mapa para ver os indicadores</div>
+            </div>
+        </section>
+
+        <!-- Seção de Notícias Regionais -->
+        <section id="noticiasSection" class="app-section">
+            <div class="section-header">
+                <h2>Notícias Regionais</h2>
+                <p>Acesse notícias e informações relevantes para sua região</p>
+            </div>
+            
+            <div id="noticiasContainer" class="consulta-regional-container">
+                <!-- Conteúdo será carregado dinamicamente -->
+                <div class="noticias-loading">Selecione uma localização no mapa para ver notícias regionais</div>
+            </div>
+        </section>
+
+        <!-- Seção de Histórico -->
+        <section id="historicoSection" class="app-section">
+            <div class="section-header">
+                <h2>Histórico</h2>
+                <p>Consulte seu histórico de simulações e consultas</p>
+            </div>
+            
+            <div id="historicoContainer" class="historico-container">
+                <!-- Conteúdo será carregado dinamicamente -->
+                <div class="historico-empty">Nenhum histórico disponível</div>
+            </div>
+        </section>
+
+        <!-- Seção de Configurações -->
+        <section id="configuracoesSection" class="app-section">
+            <div class="section-header">
+                <h2>Configurações</h2>
+                <p>Personalize o aplicativo de acordo com suas preferências</p>
+            </div>
+            
+            <div class="settings-container">
+                <div class="settings-group">
+                    <h3>Geral</h3>
+                    <div class="settings-item">
+                        <div class="settings-label">Tema</div>
+                        <select id="themeSelect" class="nasa-select">
+                            <option value="light">Claro</option>
+                            <option value="dark">Escuro</option>
+                            <option value="auto">Automático</option>
+                        </select>
+                    </div>
+                    <div class="settings-item">
+                        <div class="settings-label">Unidades de Temperatura</div>
+                        <select id="tempUnitSelect" class="nasa-select">
+                            <option value="celsius">Celsius (°C)</option>
+                            <option value="fahrenheit">Fahrenheit (°F)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <h3>Notificações</h3>
+                    <div class="settings-item">
+                        <div class="settings-label">Alertas Climáticos</div>
+                        <label class="switch">
+                            <input type="checkbox" id="weatherAlertsToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <div class="settings-label">Notícias Regionais</div>
+                        <label class="switch">
+                            <input type="checkbox" id="newsAlertsToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <h3>Dados</h3>
+                    <div class="settings-item">
+                        <div class="settings-label">Armazenamento Offline</div>
+                        <label class="switch">
+                            <input type="checkbox" id="offlineStorageToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <div class="settings-label">Sincronização Automática</div>
+                        <label class="switch">
+                            <input type="checkbox" id="autoSyncToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <h3>Animações</h3>
+                    <div class="settings-item">
+                        <div class="settings-label">Animações</div>
+                        <button id="animationSettingsBtn" class="nasa-button">Configurar</button>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <h3>Sobre</h3>
+                    <div class="settings-item">
+                        <div class="settings-label">Versão</div>
+                        <div class="settings-value">2.0.0</div>
+                    </div>
+                    <div class="settings-item">
+                        <div class="settings-label">Desenvolvido por</div>
+                        <div class="settings-value">AgroDecision Team</div>
+                    </div>
+                    <div class="settings-item">
+                        <div class="settings-label">Dados</div>
+                        <div class="settings-value">NASA POWER Project</div>
+                    </div>
+                </div>
+                
+                <div class="settings-actions">
+                    <button id="testAppBtn" class="nasa-button">Testar Aplicativo</button>
+                    <button id="clearDataBtn" class="nasa-button secondary">Limpar Dados</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rodapé -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="img/logo_AD.png" alt="AgroDecision" class="footer-logo-img">
+                </div>
+                <div class="footer-info">
+                    <p>AgroDecision PWA - Aplicativo educacional para pequenos produtores rurais</p>
+                    <p>Desenvolvido com tecnologia da NASA</p>
+                </div>
+                <div class="footer-partners">
+                    <img src="img/nasa.png" alt="NASA" class="partner-logo">
+                    <img src="img/Credicitrus.jpg" alt="Credicitrus" class="partner-logo">
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal -->
+    <div id="modalContainer" class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Título do Modal</h3>
+                <button id="closeModal" class="modal-close">&times;</button>
+            </div>
+            <div id="modalBody" class="modal-body">
+                <!-- Conteúdo do modal será inserido dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Indicador de Offline -->
+    <div id="offlineIndicator" class="offline-indicator">
+        <span class="material-icons">cloud_off</span>
+        <span>Você está offline. Alguns recursos podem não estar disponíveis.</span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/simulation.js"></script>
+    <script src="js/consulta-mensal.js"></script>
+    <script src="js/indicadores.js"></script>
+    <script src="js/noticias-regionais.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/history.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/tests.js"></script>
+    
+    <!-- Registro do Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao registrar Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

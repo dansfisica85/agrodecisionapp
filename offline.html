@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgroDecision - Offline</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #F5F5F5;
+      color: #212121;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    
+    .offline-container {
+      max-width: 90%;
+      width: 500px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+      padding: 32px;
+      margin: 16px;
+    }
+    
+    .offline-icon {
+      font-size: 64px;
+      margin-bottom: 24px;
+    }
+    
+    h1 {
+      color: #4CAF50;
+      margin-bottom: 16px;
+    }
+    
+    p {
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+    
+    .button:hover {
+      background-color: #388E3C;
+    }
+    
+    .features-list {
+      text-align: left;
+      margin: 24px 0;
+    }
+    
+    .features-list li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">📶</div>
+    <h1>Você está offline</h1>
+    <p>Não foi possível conectar à internet. Algumas funcionalidades do AgroDecision podem estar limitadas.</p>
+    
+    <div class="features-list">
+      <p><strong>Recursos disponíveis offline:</strong></p>
+      <ul>
+        <li>Simulação de colheita</li>
+        <li>Visualização do histórico de simulações salvas</li>
+        <li>Acesso às configurações do aplicativo</li>
+      </ul>
+    </div>
+    
+    <p>Verifique sua conexão e tente novamente.</p>
+    
+    <a href="/" class="button">Tentar novamente</a>
+  </div>
+</body>
+</html>

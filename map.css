@@ -1,0 +1,384 @@
+/* Estilos específicos para o mapa */
+.map-container {
+  position: relative;
+  height: 400px;
+  margin-bottom: 24px;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+}
+
+.map {
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Personalização dos controles do Leaflet */
+.leaflet-control-container .leaflet-top,
+.leaflet-control-container .leaflet-bottom {
+  z-index: 10;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: var(--shadow-medium) !important;
+}
+
+.leaflet-control-zoom a {
+  background-color: white !important;
+  color: var(--primary-color) !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 18px !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #f5f5f5 !important;
+  color: var(--primary-dark) !important;
+}
+
+.leaflet-control-attribution {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  padding: 4px 8px !important;
+  font-size: 10px !important;
+}
+
+/* Personalização dos marcadores */
+.custom-marker {
+  background-color: var(--primary-color);
+  border: 2px solid white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.custom-marker.selected {
+  background-color: var(--accent-color);
+  width: 20px;
+  height: 20px;
+  z-index: 1000 !important;
+}
+
+.custom-marker.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Popup personalizado */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--border-radius) !important;
+  box-shadow: var(--shadow-medium) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  width: 250px !important;
+}
+
+.popup-content {
+  padding: 16px;
+}
+
+.popup-header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 12px 16px;
+}
+
+.popup-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.popup-body {
+  padding: 16px;
+}
+
+.popup-data {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.popup-data-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-data-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.popup-data-value {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.popup-button {
+  padding: 8px 12px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.popup-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.popup-button-icon {
+  font-size: 16px;
+  margin-right: 4px;
+}
+
+.popup-button.secondary {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.popup-button.secondary:hover {
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+/* Controles personalizados */
+.map-controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.map-control-button {
+  width: 36px;
+  height: 36px;
+  background-color: white;
+  border: none;
+  border-radius: 4px;
+  box-shadow: var(--shadow-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.map-control-button:hover {
+  background-color: #f5f5f5;
+}
+
+.map-control-icon {
+  font-size: 20px;
+  color: var(--primary-color);
+}
+
+/* Instruções do mapa */
+.map-instructions {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 12px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.map-instructions p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Dados do mapa */
+.map-data {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 12px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  z-index: 2;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.data-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.data-header h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+#locationName {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.data-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.data-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.data-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.data-value {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.data-loading, .data-error {
+  text-align: center;
+  padding: 16px;
+  color: var(--text-secondary);
+}
+
+.data-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .map-container {
+    height: 300px;
+  }
+  
+  .data-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .popup-content {
+    width: 200px;
+  }
+  
+  .popup-data {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .map-container {
+    height: 350px;
+  }
+}
+
+@media (min-width: 901px) {
+  .map-container {
+    height: 400px;
+  }
+}
+
+/* Tema escuro */
+body.dark-theme .leaflet-control-zoom a {
+  background-color: #1E1E1E !important;
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .leaflet-control-zoom a:hover {
+  background-color: #2D2D2D !important;
+}
+
+body.dark-theme .leaflet-control-attribution {
+  background-color: rgba(30, 30, 30, 0.8) !important;
+  color: #B0B0B0 !important;
+}
+
+body.dark-theme .map-control-button {
+  background-color: #1E1E1E;
+}
+
+body.dark-theme .map-control-button:hover {
+  background-color: #2D2D2D;
+}
+
+body.dark-theme .map-control-icon {
+  color: #4CAF50;
+}
+
+body.dark-theme .map-instructions,
+body.dark-theme .map-data {
+  background-color: rgba(30, 30, 30, 0.9);
+}
+
+body.dark-theme .popup-header {
+  background-color: #388E3C;
+}
+
+body.dark-theme .popup-body {
+  background-color: #1E1E1E;
+  color: #FFFFFF;
+}
+
+body.dark-theme .popup-data-label {
+  color: #B0B0B0;
+}
+
+body.dark-theme .popup-button.secondary {
+  color: #4CAF50;
+  border-color: #4CAF50;
+}
+
+body.dark-theme .popup-button.secondary:hover {
+  background-color: rgba(76, 175, 80, 0.2);
+}
